@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yxfang.lirun.dao.UserGroupCoinDao">
+	<!--插入-->
+	<insert id="insert" parameterType="com.yxfang.lirun.bean.UserGroupCoin">
+		INSERT INTO User_Group_Coin(
+		COIN,
+		USERID,
+		GROUPID
+		)
+		VALUES (
+		#{coin},
+		#{userid},
+		#{groupid}
+		)
+	</insert>
+	
+	<!--更新-->
+	<update id="update" parameterType="com.yxfang.lirun.bean.UserGroupCoin">
+		UPDATE User_Group_Coin
+		<set>
+			<if test="coin!=null">
+				 COIN=#{coin},
+			</if>
+			<if test="userid!=null">
+				 USERID=#{userid},
+			</if>
+			<if test="groupid!=null">
+				 GROUPID=#{groupid}
+			</if>
+		</set>
+		WHERE ID =#{id}
+	</update>
+
+	<!-- 删除信息 -->
+	<delete id="delete" parameterType="integer">
+		DELETE FROM User_Group_Coin WHERE
+		ID = #{id}
+	</delete>
+
+	<!-- 查询字段 -->
+	<sql id="selectFieldSQL">
+		SELECT 
+			ID id,
+			COIN coin,
+			USERID userid,
+			GROUPID groupid,
+			CREATETIME createtime
+	</sql>
+
+	<select id="getById" parameterType="integer"
+		resultType="com.yxfang.lirun.bean.UserGroupCoin">
+		SELECT * FROM User_Group_Coin WHERE
+		ID = #{id}
+	</select>
+
+	<!-- 查询 -->
+	<select id="find" parameterType="UserGroupCoin"
+		resultType="com.yxfang.lirun.bean.UserGroupCoin">
+		<include refid="selectFieldSQL" />
+		FROM
+		User_Group_Coin
+		<where>
+			1=1
+			<if test="coin!=null">
+			  AND COIN=#{coin},
+			</if>
+			<if test="userid!=null">
+			  AND USERID=#{userid},
+			</if>
+			<if test="groupid!=null">
+			  AND GROUPID=#{groupid}
+			</if>
+		</where>
+	</select>
+
+	<!-- 分页查询（条件） -->
+	<sql id="page_condition">
+		<where>
+			1=1
+			<if test="coin!=null">
+			  AND COIN=#{coin},
+			</if>
+			<if test="userid!=null">
+			  AND USERID=#{userid},
+			</if>
+			<if test="groupid!=null">
+			  AND GROUPID=#{groupid}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 查询字段 -->
+	<sql id="pageFieldSQL">
+		limit #{startIndex},#{pageSize}
+	</sql>
+
+	<!-- 分页计数 -->
+	<select id="pageList" parameterType="map"
+		resultType="com.yxfang.lirun.bean.UserGroupCoin">
+		<include refid="selectFieldSQL" />
+		FROM
+		User_Group_Coin
+		<include refid="page_condition" />
+		<include refid="pageFieldSQL" />
+	</select>
+
+	<!-- 分页计数 -->
+	<select id="pageCount" parameterType="map" resultType="int">
+		SELECT count(*)
+		  FROM User_Group_Coin
+		<include refid="page_condition" />
+	</select>
+</mapper>

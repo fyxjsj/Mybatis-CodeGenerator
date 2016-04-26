@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yxfang.lirun.dao.UserDao">
+	<!--插入-->
+	<insert id="insert" parameterType="com.yxfang.lirun.bean.User">
+		INSERT INTO User(
+		USERNAME,
+		TEL,
+		EMAIL,
+		HEADERPIC
+		)
+		VALUES (
+		#{username},
+		#{tel},
+		#{email},
+		#{headerpic}
+		)
+	</insert>
+	
+	<!--更新-->
+	<update id="update" parameterType="com.yxfang.lirun.bean.User">
+		UPDATE User
+		<set>
+			<if test="username!=null">
+				 USERNAME=#{username},
+			</if>
+			<if test="tel!=null">
+				 TEL=#{tel},
+			</if>
+			<if test="email!=null">
+				 EMAIL=#{email},
+			</if>
+			<if test="headerpic!=null">
+				 HEADERPIC=#{headerpic}
+			</if>
+		</set>
+		WHERE ID =#{id}
+	</update>
+
+	<!-- 删除信息 -->
+	<delete id="delete" parameterType="integer">
+		DELETE FROM User WHERE
+		ID = #{id}
+	</delete>
+
+	<!-- 查询字段 -->
+	<sql id="selectFieldSQL">
+		SELECT 
+			ID id,
+			USERNAME username,
+			TEL tel,
+			EMAIL email,
+			HEADERPIC headerpic,
+			CREATETIME createtime
+	</sql>
+
+	<select id="getById" parameterType="integer"
+		resultType="com.yxfang.lirun.bean.User">
+		SELECT * FROM User WHERE
+		ID = #{id}
+	</select>
+
+	<!-- 查询 -->
+	<select id="find" parameterType="User"
+		resultType="com.yxfang.lirun.bean.User">
+		<include refid="selectFieldSQL" />
+		FROM
+		User
+		<where>
+			1=1
+			<if test="username!=null">
+			  AND USERNAME=#{username},
+			</if>
+			<if test="tel!=null">
+			  AND TEL=#{tel},
+			</if>
+			<if test="email!=null">
+			  AND EMAIL=#{email},
+			</if>
+			<if test="headerpic!=null">
+			  AND HEADERPIC=#{headerpic}
+			</if>
+		</where>
+	</select>
+
+	<!-- 分页查询（条件） -->
+	<sql id="page_condition">
+		<where>
+			1=1
+			<if test="username!=null">
+			  AND USERNAME=#{username},
+			</if>
+			<if test="tel!=null">
+			  AND TEL=#{tel},
+			</if>
+			<if test="email!=null">
+			  AND EMAIL=#{email},
+			</if>
+			<if test="headerpic!=null">
+			  AND HEADERPIC=#{headerpic}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 查询字段 -->
+	<sql id="pageFieldSQL">
+		limit #{startIndex},#{pageSize}
+	</sql>
+
+	<!-- 分页计数 -->
+	<select id="pageList" parameterType="map"
+		resultType="com.yxfang.lirun.bean.User">
+		<include refid="selectFieldSQL" />
+		FROM
+		User
+		<include refid="page_condition" />
+		<include refid="pageFieldSQL" />
+	</select>
+
+	<!-- 分页计数 -->
+	<select id="pageCount" parameterType="map" resultType="int">
+		SELECT count(*)
+		  FROM User
+		<include refid="page_condition" />
+	</select>
+</mapper>

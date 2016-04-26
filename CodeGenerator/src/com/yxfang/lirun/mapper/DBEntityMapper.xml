@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yxfang.lirun.dao.impl.DBEntityDaoImpl">
+
+	<!-- 查询 -->
+	<select id="find" parameterType="com.yxfang.lirun.bean.DBEntity"
+		resultType="com.yxfang.lirun.bean.DBEntity">
+		<![CDATA[
+		SELECT upper(cs.COLUMN_NAME)       field,
+		       upper(cs.DATA_TYPE)       type,
+		       cs.COLUMN_COMMENT columnComment
+		  FROM information_schema.COLUMNS cs
+		]]>
+		<where>
+			<if test="tableName!=null">
+				CS.TABLE_NAME=#{tableName}
+			</if>
+			<if test="tableSchema!=null">
+			   and CS.TABLE_SCHEMA=#{tableSchema}
+			</if>
+		</where>
+	</select>
+
+	<select id="queryAllTable" parameterType="map" resultType="string">
+		<![CDATA[
+			SELECT upper(table_name) from
+		 (SELECT * FROM information_schema.COLUMNS cs
+		where TABLE_SCHEMA ='lirun')
+		 sc group by sc.table_name
+		]]>
+	</select>
+
+</mapper>

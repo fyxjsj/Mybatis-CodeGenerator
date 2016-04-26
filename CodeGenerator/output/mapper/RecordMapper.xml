@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yxfang.lirun.dao.RecordDao">
+	<!--插入-->
+	<insert id="insert" parameterType="com.yxfang.lirun.bean.Record">
+		INSERT INTO Record(
+		USERID,
+		PIC,
+		PS,
+		GROUPID,
+		TIME,
+		STATE
+		)
+		VALUES (
+		#{userid},
+		#{pic},
+		#{ps},
+		#{groupid},
+		#{time},
+		#{state}
+		)
+	</insert>
+	
+	<!--更新-->
+	<update id="update" parameterType="com.yxfang.lirun.bean.Record">
+		UPDATE Record
+		<set>
+			<if test="userid!=null">
+				 USERID=#{userid},
+			</if>
+			<if test="pic!=null">
+				 PIC=#{pic},
+			</if>
+			<if test="ps!=null">
+				 PS=#{ps},
+			</if>
+			<if test="groupid!=null">
+				 GROUPID=#{groupid},
+			</if>
+			<if test="time!=null">
+				 TIME=#{time},
+			</if>
+			<if test="state!=null">
+				 STATE=#{state}
+			</if>
+		</set>
+		WHERE ID =#{id}
+	</update>
+
+	<!-- 删除信息 -->
+	<delete id="delete" parameterType="integer">
+		DELETE FROM Record WHERE
+		ID = #{id}
+	</delete>
+
+	<!-- 查询字段 -->
+	<sql id="selectFieldSQL">
+		SELECT 
+			ID id,
+			USERID userid,
+			PIC pic,
+			PS ps,
+			GROUPID groupid,
+			TIME time,
+			STATE state,
+			CREATETIME createtime
+	</sql>
+
+	<select id="getById" parameterType="integer"
+		resultType="com.yxfang.lirun.bean.Record">
+		SELECT * FROM Record WHERE
+		ID = #{id}
+	</select>
+
+	<!-- 查询 -->
+	<select id="find" parameterType="Record"
+		resultType="com.yxfang.lirun.bean.Record">
+		<include refid="selectFieldSQL" />
+		FROM
+		Record
+		<where>
+			1=1
+			<if test="userid!=null">
+			  AND USERID=#{userid},
+			</if>
+			<if test="pic!=null">
+			  AND PIC=#{pic},
+			</if>
+			<if test="ps!=null">
+			  AND PS=#{ps},
+			</if>
+			<if test="groupid!=null">
+			  AND GROUPID=#{groupid},
+			</if>
+			<if test="time!=null">
+			  AND TIME=#{time},
+			</if>
+			<if test="state!=null">
+			  AND STATE=#{state}
+			</if>
+		</where>
+	</select>
+
+	<!-- 分页查询（条件） -->
+	<sql id="page_condition">
+		<where>
+			1=1
+			<if test="userid!=null">
+			  AND USERID=#{userid},
+			</if>
+			<if test="pic!=null">
+			  AND PIC=#{pic},
+			</if>
+			<if test="ps!=null">
+			  AND PS=#{ps},
+			</if>
+			<if test="groupid!=null">
+			  AND GROUPID=#{groupid},
+			</if>
+			<if test="time!=null">
+			  AND TIME=#{time},
+			</if>
+			<if test="state!=null">
+			  AND STATE=#{state}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 查询字段 -->
+	<sql id="pageFieldSQL">
+		limit #{startIndex},#{pageSize}
+	</sql>
+
+	<!-- 分页计数 -->
+	<select id="pageList" parameterType="map"
+		resultType="com.yxfang.lirun.bean.Record">
+		<include refid="selectFieldSQL" />
+		FROM
+		Record
+		<include refid="page_condition" />
+		<include refid="pageFieldSQL" />
+	</select>
+
+	<!-- 分页计数 -->
+	<select id="pageCount" parameterType="map" resultType="int">
+		SELECT count(*)
+		  FROM Record
+		<include refid="page_condition" />
+	</select>
+</mapper>
